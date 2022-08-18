@@ -1,0 +1,79 @@
+{
+  "object_kind": "push",
+  "event_name": "push",
+  "before": "22dda79fb280287df6b0a5f38b0d9c9c04f56a43",
+  "after": "1efc02ec991e325eb62c1829d1b40d701ceeed55",
+  "ref": "refs/heads/master",
+  "checkout_sha": "1efc02ec991e325eb62c1829d1b40d701ceeed55",
+  "message": null,
+  "user_id": 343,
+  "user_name": "bing.ma",
+  "user_username": "bing.ma",
+  "user_email": "",
+  "user_avatar": "https://secure.gravatar.com/avatar/e19c190321a588dc028a734acf4f5931?s=80&d=identicon",
+  "project_id": 1209,
+  "project": {
+    "id": 1209,
+    "name": "tekton-demo",
+    "description": "",
+    "web_url": "https://gitlab.daocloud.cn/bing.ma/tekton-demo",
+    "avatar_url": null,
+    "git_ssh_url": "git@gitlab.daocloud.cn:bing.ma/tekton-demo.git",
+    "git_http_url": "https://gitlab.daocloud.cn/bing.ma/tekton-demo.git",
+    "namespace": "bing.ma",
+    "visibility_level": 20,
+    "path_with_namespace": "bing.ma/tekton-demo",
+    "default_branch": "master",
+    "ci_config_path": "",
+    "homepage": "https://gitlab.daocloud.cn/bing.ma/tekton-demo",
+    "url": "git@gitlab.daocloud.cn:bing.ma/tekton-demo.git",
+    "ssh_url": "git@gitlab.daocloud.cn:bing.ma/tekton-demo.git",
+    "http_url": "https://gitlab.daocloud.cn/bing.ma/tekton-demo.git"
+  },
+  "commits": [
+    {
+      "id": "1efc02ec991e325eb62c1829d1b40d701ceeed55",
+      "message": "add examples\n",
+      "title": "add examples",
+      "timestamp": "2022-04-21T17:26:50+08:00",
+      "url": "https://gitlab.daocloud.cn/bing.ma/tekton-demo/-/commit/1efc02ec991e325eb62c1829d1b40d701ceeed55",
+      "author": {
+        "name": "mabing",
+        "email": "bing.ma@daocloud.io"
+      },
+      "added": [
+        "examples/pipeline/openshift-client.yaml",
+        "examples/pipeline/pipeline-run.yaml",
+        "examples/pipeline/pipeline-sa-role.yaml",
+        "examples/pipeline/pipelines.yaml",
+        "examples/task/build-golang-run.yaml",
+        "examples/task/build-golang.yaml",
+        "examples/trigger/binding.yaml",
+        "examples/trigger/curl.sh",
+        "examples/trigger/event-listener-rbac.yaml",
+        "examples/trigger/gitlab-push-listener.yaml",
+        "examples/trigger/gitlab-secret.yaml",
+        "examples/trigger/pushevents.json",
+        "examples/trigger/template.yaml"
+      ],
+      "modified": [
+
+      ],
+      "removed": [
+
+      ]
+    }
+  ],
+  "total_commits_count": 1,
+  "push_options": {
+  },
+  "repository": {
+    "name": "tekton-demo",
+    "url": "git@gitlab.daocloud.cn:bing.ma/tekton-demo.git",
+    "description": "",
+    "homepage": "https://gitlab.daocloud.cn/bing.ma/tekton-demo",
+    "git_http_url": "https://gitlab.daocloud.cn/bing.ma/tekton-demo.git",
+    "git_ssh_url": "git@gitlab.daocloud.cn:bing.ma/tekton-demo.git",
+    "visibility_level": 20
+  }
+}

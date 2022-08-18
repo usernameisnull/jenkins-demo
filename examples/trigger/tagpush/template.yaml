@@ -1,0 +1,36 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: golang-tag-push-template
+spec:
+  params: # 定义参数，和 TriggerBinding 中的保持一致
+    - name: gitrevision
+    - name: gitrepositoryurl
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: TaskRun
+      metadata:
+        generateName: gitlab-tag-push-print-
+      spec:
+        taskSpec:
+          inputs:
+            resources:
+              - name: source
+                type: git
+          steps:
+            - image: 10.6.182.195:5000/ubuntu:latest
+              script: |
+                #! /bin/bash
+                ls $(inputs.resources.source.path)
+                echo "tag push,================================================================"
+                echo $(inputs.resources.source.revision), $(inputs.resources.source.url)
+        inputs:
+          resources:
+            - name: source
+              resourceSpec:
+                type: git
+                params:
+                  - name: revision
+                    value: $(tt.params.gitrevision)
+                  - name: url
+                    value: $(tt.params.gitrepositoryurl)

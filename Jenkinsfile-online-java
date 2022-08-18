@@ -1,0 +1,43 @@
+pipeline {
+  agent {
+    node {
+      label 'go'
+    }
+
+  }
+  stages {
+    stage('upload jar') {
+      steps {
+        container('go') {
+            withCredentials([usernamePassword(credentialsId : 'mabing-gitlab' ,passwordVariable : 'PASS' ,usernameVariable : 'USER' ,)])  {
+                withFileParameter('JARFILE') {
+                  sh 'mv $JARFILE server.jar'
+                  sh 'echo FROM registry.cn-beijing.aliyuncs.com/kubesphereio/java-8-runtime:v3.2.0 > Dockerfile'
+                  sh 'echo COPY server.jar . >> Dockerfile'
+                  sh 'echo CMD java -jar server.jar  >> Dockerfile'
+                  sh 'cat Dockerfile'
+                  sh '''
+                  export IMG="release-ci.daocloud.io/demo/java-simple-http:latest"
+                  docker login release-ci.daocloud.io -u $USER -p $PASS
+                  docker build -t \$IMG .
+                  docker push \$IMG
+                  '''
+                }
+            }
+        }
+      }
+    }
+    stage('deploy'){
+            steps {
+                container('go'){
+                   withCredentials([kubeconfigFile(credentialsId: 'dev-kubeconfig', variable: 'KUBECONFIG')]) {
+                       withFileParameter('DEPLOYFILE') {
+                           sh 'mv $DEPLOYFILE deploy.yaml'
+                           sh 'kubectl apply -f deploy.yaml'
+                       }
+                    }
+                }
+            }
+    }
+  }
+}

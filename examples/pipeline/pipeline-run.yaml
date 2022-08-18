@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: golang-pipeline-run
+spec:
+  workspaces:
+  - name: source # this workspace name must be declared in the Task
+    emptyDir: {}      #
+  params:
+  - name: contextDir
+    value: simple-http-server
+  - name: destinationImage
+    value: "10.6.182.195:5000/tekton/demo/simple-http-server:latest"
+  - name: dockerFile
+    value: ./Dockerfile
+  - name: tlsVerify
+    value: "false"
+  - name: url
+    value: "https://gitlab.daocloud.cn/bing.ma/tekton-demo.git"
+  - name: revision
+    value: master
+  - name: sslVerify
+    value: "false"
+  - name: storageDriver
+    value: vfs
+  - name: sslVerify
+    value: "false"
+  - name: source
+    value: source
+  pipelineRef:
+    name: "golang-pipeline"
+  serviceAccountName: 'pipeline'

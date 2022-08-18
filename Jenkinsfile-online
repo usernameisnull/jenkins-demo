@@ -1,0 +1,57 @@
+pipeline {
+  agent {
+    node {
+      label 'go'
+    }
+
+  }
+  stages {
+    stage('clone code') {
+      agent none
+      steps {
+        container('go') {
+          git(url: 'https://gitlab.daocloud.cn/bing.ma/tekton-demo.git', credentialsId: 'mabing-gitlab', branch: 'master', changelog: true, poll: false)
+        }
+
+      }
+    }
+
+    stage('build & push') {
+      agent none
+      steps {
+        container('go') {
+          sh 'go build -o simple-http-server main.go'
+          archiveArtifacts 'simple-http-server'
+          withCredentials([usernamePassword(credentialsId : 'mabing-gitlab' ,passwordVariable : 'PASS' ,usernameVariable : 'USER' ,)]) {
+          sh 'docker build -f Dockerfile . -t release-ci.daocloud.io/demo/http-hello:latest'
+          sh 'docker login release-ci.daocloud.io -u $USER -p $PASS'
+          sh 'docker push release-ci.daocloud.io/demo/http-hello:latest'
+        }
+        }
+
+
+
+        // kubernetesDeploy(enableConfigSubstitution: true, deleteResource: false, kubeconfigId: 'kubeconfig-01', dockerCredentials: [[credentialsId: 'mabing-gitlab', url: 'https://release-ci.daocloud.io']])
+      }
+    }
+
+    // https://github.com/kubesphere/devops-maven-sample/blob/master/Jenkinsfile-online
+    stage('deply'){
+        agent none
+        steps {
+            container('go'){
+               withCredentials([kubeconfigFile(credentialsId: 'dev-kubeconfig', variable: 'KUBECONFIG')]) {
+                    //mkdir ~/.kube
+                    //echo "$KUBECONFIG" > ~/.kube/config
+                    sh 'kubectl apply -f deploy.yaml'
+                }
+            }
+        }
+
+    }
+
+  }
+  parameters {
+    string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
+  }
+}

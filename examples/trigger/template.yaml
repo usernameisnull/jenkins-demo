@@ -1,0 +1,69 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: golang-template
+spec:
+  params: # 定义参数，和 TriggerBinding 中的保持一致
+    - name: gitrevision
+    - name: gitrepositoryurl
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: TaskRun
+      metadata:
+        generateName: gitlab-run-
+      spec:
+        taskSpec:
+          inputs:
+            resources:
+              - name: source
+                type: git
+          steps:
+            - image: 10.6.182.195:5000/ubuntu:latest
+              script: |
+                #! /bin/bash
+                ls $(inputs.resources.source.path)
+                echo "================================================================"
+                echo $(inputs.resources.source.revision), $(inputs.resources.source.url)
+        inputs:
+          resources:
+            - name: source
+              resourceSpec:
+                type: git
+                params:
+                  - name: revision
+                    value: $(tt.params.gitrevision)
+                  - name: url
+                    value: $(tt.params.gitrepositoryurl)
+#  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: golang-pipeline-run-
+      spec:
+        workspaces:
+        - name: source # this workspace name must be declared in the Task
+          emptyDir: {}
+        pipelineRef:
+          name: golang-pipeline
+        serviceAccountName: 'pipeline'
+        params:
+        - name: contextDir
+          value: simple-http-server
+        - name: destinationImage
+          value: "10.6.182.195:5000/tekton/demo/simple-http-server:latest"
+        - name: dockerFile
+          value: ./Dockerfile
+        - name: tlsVerify
+          value: "false"
+        - name: url
+          value: "https://gitlab.daocloud.cn/bing.ma/tekton-demo.git"
+        - name: revision
+          value: master
+        - name: sslVerify
+          value: "false"
+        - name: storageDriver
+          value: vfs
+        - name: sslVerify
+          value: "false"
+        - name: source
+          value: source

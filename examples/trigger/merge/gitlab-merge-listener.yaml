@@ -1,0 +1,26 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: gitlab-golang-merge-listener  # 该事件监听器会创建一个名为el-gitlab-listener的Service对象
+spec:
+  resources:
+    kubernetesResource:
+      serviceType: NodePort
+  serviceAccountName: tekton-triggers-gitlab-sa
+  triggers:
+  - name: gitlab-merge-events-trigger
+    interceptors:
+    - ref:
+        name: gitlab
+      params:
+      - name: secretRef  # 引用 gitlab-secret 的 Secret 对象中的 secretToken 的值
+        value:
+          secretName: gitlab-secret
+          secretKey: secretToken
+      - name: eventTypes
+        value:
+          - Merge Request Hook # 只接收 GitLab Push 事件
+    bindings:
+    - ref: golang-binding
+    template:
+      ref: golang-merge-template
