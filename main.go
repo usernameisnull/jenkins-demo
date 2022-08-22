@@ -3,13 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"time"
 )
 
-var saySth="nothin1g"
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, saySth+","+time.Now().Format("2006-01-02 15:04:05"))
+	n := generateRandomNum(1, 30000)
+	now := time.Now().Format("2006-01-02 15:04:05")
+	res := fmt.Sprintf("time: %s\nrandom number: %d\n", now, n)
+	fmt.Fprintf(w, res)
 }
 
 func main() {
@@ -24,3 +27,7 @@ func main() {
 	}
 }
 
+func generateRandomNum(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min) + min
+}
