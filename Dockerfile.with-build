@@ -1,8 +1,8 @@
-FROM release.daocloud.io/mabing-test/golang:1.16.15 as builder
+FROM golang:1.16.15 as builder
 RUN mkdir /root/project
 COPY go.mod main.go /root/project/
 RUN cd /root/project && go build -o simple-http-server main.go
 
-FROM release.daocloud.io/mabing-test/ubuntu:22.04
+FROM ubuntu:22.04
 COPY --from=builder /root/project/simple-http-server /
 CMD  [ "/simple-http-server" ]
